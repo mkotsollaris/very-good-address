@@ -11,24 +11,7 @@ export const getServerSideProps = ({ query }) => ({
   props: query,
 });
 
-const Home: NextPage = ({
-  name,
-  languages,
-  city,
-  region,
-  country,
-  currencyCode,
-  currencySymbol,
-}) => {
-  console.log(
-    name,
-    languages,
-    city,
-    region,
-    country,
-    currencyCode,
-    currencySymbol
-  );
+const Home: NextPage = ({ location }) => {
   return (
     <div className={styles.container}>
       <Head>
@@ -78,7 +61,7 @@ const Home: NextPage = ({
           </a>
         </div>
         <div className={styles.grid}>
-          <GoogleMaps />
+          <GoogleMaps location={JSON.parse(location)} />
         </div>
       </main>
 
