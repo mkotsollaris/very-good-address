@@ -1,15 +1,16 @@
-import React from "react";
+import React, { useContext } from "react";
+import { AppContext } from "../context/AppContext";
 import styles from "../styles/Home.module.css";
 
 const ExplainResponseWidget = ({
-  distance,
   cityVerified,
   countryVerified,
 }: {
-  distance: number;
   cityVerified: boolean;
   countryVerified: boolean;
 }) => {
+  const { distance } = useContext(AppContext);
+
   return (
     <div className={styles.card}>
       Distance {distance} <br />

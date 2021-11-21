@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { AppContext } from "./AppContext";
 
 interface AppProviderProps {
@@ -31,7 +31,13 @@ const getDistanceFromLatLonInKm = (
 };
 
 const AppProvider = ({ children }: AppProviderProps) => {
-  return <AppContext.Provider value={{}}>{children}</AppContext.Provider>;
+  const [distance, setDistance] = useState(null);
+
+  return (
+    <AppContext.Provider value={{ distance, setDistance }}>
+      {children}
+    </AppContext.Provider>
+  );
 };
 
 export default AppProvider;

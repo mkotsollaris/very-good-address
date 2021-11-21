@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import {
   withScriptjs,
   withGoogleMap,
   GoogleMap,
   Marker,
 } from "react-google-maps";
+import { AppContext } from "../context/AppContext";
+import { getDistanceFromLatLonInKm } from "../context/AppProvider";
 
 const defaultOptions = { scrollwheel: false };
 
@@ -26,6 +28,7 @@ function addMarker(location: any, map: any) {
 const GoogleMaps = ({ location }) => {
   const defaultCenter = { lat: location.lat, lng: location.lng };
   const [claimedAddress, setClaimedAddress] = useState(null);
+  const { distance, setDistance } = useContext(AppContext);
 
   // TODO avoid re-render https://github.com/tomchentw/react-google-maps/issues/220
   const RegularMap = withScriptjs(
@@ -39,6 +42,14 @@ const GoogleMaps = ({ location }) => {
           console.log("EEE", e);
           // addMarker(e.latLng, this);
           setClaimedAddress(e.latLng);
+          const d = getDistanceFromLatLonInKm(
+            defaultCenter.lat,
+            defaultCenter.lng,
+            e.latLng.lat(),
+            e.latLng.lng()
+          );
+          setDistance(d);
+          console.log("DISTACNE", d);
         }}
       >
         <Marker position={defaultCenter} />
