@@ -3,6 +3,7 @@ import Head from "next/head";
 import Image from "next/image";
 import styles from "../styles/Home.module.css";
 import GoogleMaps from "../components/GoogleMaps";
+import ExplainResponseWidget from "../components/ExplainResponseWidget";
 
 // Forward properties from `_middleware.tsx`
 // When support for configuring gSSP to use Edge Functions lands,
@@ -24,7 +25,7 @@ const Home: NextPage = ({ location }) => {
         <h1 className={styles.title}>Very Good Address!</h1>
 
         <div className={styles.grid}>
-          <a className={styles.card}>
+          <div className={styles.card}>
             <h2>Location-Verified Addresses for Customer Onboarding</h2>
             <p>
               Address verification using the location services of mobile devices
@@ -35,47 +36,21 @@ const Home: NextPage = ({ location }) => {
               Very Good Address makes it easy to integrate location-verified
               addresses into your onboarding process through our API service.
             </p>
-          </a>
-
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h2>Learn &rarr;</h2>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/master/examples"
-            className={styles.card}
-          >
-            <h2>Examples &rarr;</h2>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-          >
-            <h2>Deploy &rarr;</h2>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
+          </div>
         </div>
         <div className={styles.grid}>
           <GoogleMaps location={JSON.parse(location)} />
         </div>
+        <div>
+          <ExplainResponseWidget />
+        </div>
       </main>
 
       <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{" "}
-          <span className={styles.logo}>
-            <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
-          </span>
-        </a>
+        All rights reserved
+        <span className={styles.logo}>
+          <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
+        </span>
       </footer>
     </div>
   );
