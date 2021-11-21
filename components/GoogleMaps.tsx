@@ -27,6 +27,7 @@ const GoogleMaps = ({ location }) => {
   const defaultCenter = { lat: location.lat, lng: location.lng };
   const [claimedAddress, setClaimedAddress] = useState(null);
 
+  // TODO avoid re-render https://github.com/tomchentw/react-google-maps/issues/220
   const RegularMap = withScriptjs(
     withGoogleMap(() => (
       <GoogleMap
@@ -41,7 +42,7 @@ const GoogleMaps = ({ location }) => {
         }}
       >
         <Marker position={defaultCenter} />
-        {/* {claimedAddress ? <Marker position={claimedAddress} /> : null} */}
+        {claimedAddress ? <Marker position={claimedAddress} /> : null}
       </GoogleMap>
     ))
   );
