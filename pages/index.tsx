@@ -13,9 +13,10 @@ export const getServerSideProps = ({ query }) => ({
   props: query,
 });
 
-const Home: NextPage = ({ location }) => {
+const Home: NextPage = ({ city, region, country, location }) => {
+  console.log("CITY", city);
   return (
-    <AppProvider>
+    <AppProvider city={city} region={region} country={country}>
       <div className={styles.container}>
         <Head>
           <title>Very Good Address</title>

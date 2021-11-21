@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import { AppContext } from "./AppContext";
 
 interface AppProviderProps {
+  city: string;
+  country: string;
+  region: string;
   children: React.ReactNode;
 }
 
@@ -30,15 +33,64 @@ const getDistanceFromLatLonInKm = (
   return d.toFixed(2);
 };
 
-const AppProvider = ({ children }: AppProviderProps) => {
+const verifyAddress = (formattedAddresses: string[], input: string) => {
+  return formattedAddresses?.includes(input);
+};
+
+// COUNTRY 'US' needs more parsing https://maps.googleapis.com/maps/api/geocode/json?latlng=40.714224,-73.961452&sensor=true&key=AIzaSyBugmuemdXwaoIsifa2YypfEK7H0g9QpSE
+const getCountryFromGeo = (fetchGeoRes) => {
+  const countryTypesResponse = fetchGeoRes.results.find((r) => {
+    if (r.types.includes("country")) {
+      return r;
+    }
+  });
+  return countryTypesResponse?.address_components[0]?.short_name;
+};
+
+const getGeoCodeFormattedAddresses: string[] = async (lat, lng) => {
+  const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&sensor=true&key=AIzaSyBugmuemdXwaoIsifa2YypfEK7H0g9QpSE`;
+  const fetcherRes = await fetch(url).then((r) => r.json());
+  // need to return city, state/province, country, address
+  // return fetcherRes?.results[0]?.geometry?.location;
+  const country = getCountryFromGeo(fetcherRes);
+  const formattedAddresses = fetcherRes.results
+    .map((e) => e.formatted_address.split(",").map((i) => i.trim()))
+    .flat();
+
+  return { formattedAddresses, computedCountry: country };
+};
+
+const AppProvider = ({ city, country, region, children }: AppProviderProps) => {
   const [distance, setDistance] = useState(null);
+  const [cityVerified, setCityVerified] = useState(false);
+  const [countryVerified, setCountryVerified] = useState(false);
+  const [regionVerified, setRegionVerified] = useState(false);
 
   return (
-    <AppContext.Provider value={{ distance, setDistance }}>
+    <AppContext.Provider
+      value={{
+        countryVerified,
+        setCountryVerified,
+        cityVerified,
+        setCityVerified,
+        city,
+        country,
+        region,
+        distance,
+        setDistance,
+        regionVerified,
+        setRegionVerified,
+      }}
+    >
       {children}
     </AppContext.Provider>
   );
 };
 
 export default AppProvider;
-export { getDistanceFromLatLonInKm };
+
+export {
+  getDistanceFromLatLonInKm,
+  getGeoCodeFormattedAddresses,
+  verifyAddress,
+};

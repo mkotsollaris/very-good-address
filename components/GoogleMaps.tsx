@@ -6,29 +6,28 @@ import {
   Marker,
 } from "react-google-maps";
 import { AppContext } from "../context/AppContext";
-import { getDistanceFromLatLonInKm } from "../context/AppProvider";
+import {
+  getDistanceFromLatLonInKm,
+  getGeoCodeFormattedAddresses,
+  verifyAddress,
+} from "../context/AppProvider";
 
 const defaultOptions = { scrollwheel: false };
-
 const loadingElementStyle = { height: "100%" };
 const containerElementStyle = { height: "280px" };
 const mapElementStyle = { height: "100%" };
 
-// Adds a marker to the map.
-function addMarker(location: any, map: any) {
-  // Add the marker at the clicked location, and add the next-available label
-  // from the array of alphabetical characters.
-  new Marker({
-    position: location,
-    label: "Claimed Location",
-    map,
-  });
-}
-
 const GoogleMaps = ({ location }) => {
+  const { city, country, region } = useContext(AppContext);
+  console.log("HEY", city, country, region);
   const defaultCenter = { lat: location.lat, lng: location.lng };
   const [claimedAddress, setClaimedAddress] = useState(null);
-  const { distance, setDistance } = useContext(AppContext);
+  const {
+    setDistance,
+    setCountryVerified,
+    setCityVerified,
+    setRegionVerified,
+  } = useContext(AppContext);
 
   // TODO avoid re-render https://github.com/tomchentw/react-google-maps/issues/220
   const RegularMap = withScriptjs(
@@ -38,7 +37,7 @@ const GoogleMaps = ({ location }) => {
         defaultZoom={8}
         defaultCenter={defaultCenter}
         defaultOptions={defaultOptions}
-        onClick={(e) => {
+        onClick={async (e) => {
           console.log("EEE", e);
           // addMarker(e.latLng, this);
           setClaimedAddress(e.latLng);
@@ -48,6 +47,23 @@ const GoogleMaps = ({ location }) => {
             e.latLng.lat(),
             e.latLng.lng()
           );
+          const { formattedAddresses, computedCountry } =
+            await getGeoCodeFormattedAddresses(e.latLng.lat(), e.latLng.lng());
+          const cityVerified = verifyAddress(formattedAddresses, city);
+          const countryVerified = computedCountry === country;
+          console.log("computedCountry", computedCountry, country);
+          const regionVerified = verifyAddress(formattedAddresses, region);
+          console.log(
+            "cityVerified",
+            cityVerified,
+            "countryVerified",
+            countryVerified,
+            "regionVerified",
+            regionVerified
+          );
+          setCityVerified(cityVerified);
+          setCountryVerified(countryVerified);
+          setRegionVerified(regionVerified);
           setDistance(d);
           console.log("DISTACNE", d);
         }}
